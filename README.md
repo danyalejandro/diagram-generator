@@ -1,27 +1,29 @@
 # Message Diagram Generator
 This is a message diagram generator that takes a text file (ex. console output) as input, detects certain special messages with a special notation, and turns them into a flow of messages (similar to a sequence diagram) between threads/nodes/computers/etc. The generated diagram is an HTML file with SVG graphics, that also includes a view of the console input to facilitate debugging.
 
-This project consists of 2 parts: A web page that shows the contents of 2 JSON files (located in the *diagram/data* directory), and a Go implementation that generates those files. As long as you respect the JSON syntax, you can make your own implementation for any language or use case.
-
-This generator was written to better understand the *primary/backup key/value service* laboratory, part of the Distributed Systems class in the University of Victoria (Canada).
+This project consists of 2 parts: A web page that shows the contents of a JSON file (located in *diagram/data/content.js*), and a Go implementation that generates the JSON content file. As long as you respect the JSON syntax, you can make your own implementation for any language or use case.
 
 The following is a capture of an example diagram (green, yellow and red orbs show text toltips on hover):
 
 ![alt tag](/docs/example.png)
+
+*Note: This generator was written to better understand the **primary/backup key/value service** laboratory, part of the Distributed Systems course in the University of Victoria (Canada).*
+
+
 
 ## Installation (for Lab 2)
 
 1. Copy the *diagram* directory and the files *makediagram.go* and *textdiagram.sh* to your *src* folder.
 2. Add **import "diagram"** to any source file from where you want to log elements to the diagram (probably all of them).
 
-## Usage
+## General Usage
 
 You are expected to:
 
 1. Modify the file *axis.js* to contain your nodes (if it still doesn't).
-2. Use log functions to print log messages in a special format (see *Available log functions*).
-3. Execute the script *testdiagram.sh* to print the output to *diagram/test.out* and generate the diagram.
-4. Open (or refresh browser) the file: *diagram/index.html* to review the diagram.
+2. Use log functions to print log messages as needed (see *Available log functions*).
+3. Execute the script *testdiagram.sh*. This will print the output to *diagram/test.out* and fill the contents of *diagram/data/content.js*.
+4. Open the file *diagram/index.html* (or refresh browser) to review the diagram.
 
 After you finish adding log functions to your codebase, just run **./testdiagram.sh** and refresh your browser to update your diagram. If you cannot run the script, remember to give it execution permissions (*chmod +x testdiagram.sh*) or you can just read the file contents and create your own script / execute manually.
 
@@ -32,13 +34,11 @@ First, edit the file *diagram/data/axis.js* (a file that contains a JSON object;
 * **label:** Human readable text that will show for this axis in the diagram (2-3 characters long).
 * **color:** HTML color for this axis.
 
-After you have configured the axis you need, you can create diagrams based on your logs. For this, you will need to print messages in a special notation that starts with the character *@*.
-
-The file *diagram/diagram.go* contains the package *diagram* with functions that you can use to log messages that get interpreted by the language generator. Every time you use one of the functions, a new element will appear in your diagram. 
+After you have configured the axis, you can create diagrams based on your log messages.
 
 ## Available log functions
 
-The currently available functions for generating log messages are as follow:
+The file *diagram/diagram.go* contains the package *diagram* with functions that you can use to log messages that get interpreted by the language generator. Every time you use one of the functions, a new element will appear in your diagram.  The currently available functions for generating log messages are:
 
 #### LogMsg(origin string, dest string, label string)
 Produces an arrow from axis *origin* to axis *dest* with the specified *label*. A good place to place this is before and after a client makes a Ping().
