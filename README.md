@@ -16,14 +16,29 @@ The following is a capture of an example diagram (green, yellow and red orbs sho
 
 ## Usage
 
-The diagram consists of elements First, edit the file *diagram/data/axis.js* (a file that contains a JSON object; syntax should be self-explanatory) to include any number of nodes you wish to appear in the diagram. For each node, a vertical axis is drawn. Each axis has 3 string properties:
+You are expected to:
+
+1. Modify the file *axis.js* to contain your nodes (if it still doesn't).
+2. Use log functions to print log messages in a special format (see *Available log functions*).
+3. Execute the script *testdiagram.sh* to print the output to *diagram/test.out* and generate the diagram.
+4. Open (or refresh browser) the file: *diagram/index.html* to review the diagram.
+
+After you finish adding log functions to your codebase, just run **./testdiagram.sh** and refresh your browser to update your diagram. If you cannot run the script, remember to give it execution permissions (*chmod +x testdiagram.sh*) or you can just read the file contents and create your own script / execute manually.
+
+## Axis configuration
+
+First, edit the file *diagram/data/axis.js* (a file that contains a JSON object; syntax should be self-explanatory) to include any number of nodes you wish to appear in the diagram. For each node, a vertical axis is drawn. Each axis has 3 string properties:
 * **id:** Unique axis identificator. Won't appear in the diagram, but identifies the axis in the log messages that generate the diagram.
 * **label:** Human readable text that will show for this axis in the diagram (2-3 characters long).
 * **color:** HTML color for this axis.
 
 After you have configured the axis you need, you can create diagrams based on your logs. For this, you will need to print messages in a special notation that starts with the character *@*.
 
-The file *diagram/diagram.go* contains the package *diagram* with functions that you can use to log messages that get interpreted by the language generator. Every time you use one of the functions, a new element will appear in your diagram. The included functions are:
+The file *diagram/diagram.go* contains the package *diagram* with functions that you can use to log messages that get interpreted by the language generator. Every time you use one of the functions, a new element will appear in your diagram. 
+
+## Available log functions
+
+The currently available functions for generating log messages are as follow:
 
 #### LogMsg(origin string, dest string, label string)
 Produces an arrow from axis *origin* to axis *dest* with the specified *label*. A good place to place this is before and after a client makes a Ping().
