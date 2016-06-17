@@ -7,7 +7,7 @@ The following is a capture of an example diagram (green, yellow and red orbs sho
 
 ![alt tag](/docs/example.png)
 
-*Note: This generator was written to better understand the **primary/backup key/value service** laboratory, part of the Distributed Systems course in the University of Victoria (Canada).*
+*Note: This generator was written to better understand the __primary/backup key/value service__ laboratory, part of the Distributed Systems course in the University of Victoria (Canada).*
 
 
 
