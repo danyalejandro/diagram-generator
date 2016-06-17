@@ -1,0 +1,1029 @@
+StartServer( /var/tmp/824-501/viewserver-83142-v )
+MakeClerk( /var/tmp/824-501/viewserver-83142-1 ,  /var/tmp/824-501/viewserver-83142-v )
+MakeClerk( /var/tmp/824-501/viewserver-83142-2 ,  /var/tmp/824-501/viewserver-83142-v )
+MakeClerk( /var/tmp/824-501/viewserver-83142-3 ,  /var/tmp/824-501/viewserver-83142-v )
+ViewServer.tick()
+@|title|Test: First primary ...
+
+@|table|vs|P:,B:,vn:0
+@|msg|s1|->|vs|Ping(0)
+
+Clerk 1 pinged: 0
+* NEW CLERK PINGING
+View state: P_, B_, vn0
+(delayed) Assigning primary =  /var/tmp/824-501/viewserver-83142-1
+@|state|yellow|vs|Prepare P=s1, wait ACK
+Clerk s1 got Ping response:  P1, B_, vn1
+@|msg|vs|->|s1|1
+@|msg|s1|->|vs|Ping(1)
+
+Clerk 1 pinged: 1
+Future primary ACK! Aplying newView.  P1, B_, vn1
+@|state|green|vs|Primary ACK! Apply changes: P1, B_, vn1.
+Clerk s1 got Ping response:  P1, B_, vn1
+@|msg|vs|->|s1|1
+  ... Passed
+@|title|Test: First backup ...
+
+@|table|vs|P:s1,B:,vn:1
+@|msg|s1|->|vs|Ping(1)
+
+Clerk 1 pinged: 1
+Clerk s1 got Ping response:  P1, B_, vn1
+@|msg|vs|->|s1|1
+@|msg|s2|->|vs|Ping(0)
+
+Clerk 2 pinged: 0
+* NEW CLERK PINGING
+View state: P1, B_, vn1
+Clerk s2 got Ping response:  P1, B_, vn1
+@|msg|vs|->|s2|1
+ViewServer.tick()
+Time since last ping from Primary: 100ms
+@|msg|s1|->|vs|Ping(1)
+
+Clerk 1 pinged: 1
+Clerk s1 got Ping response:  P1, B_, vn1
+@|msg|vs|->|s1|1
+@|msg|s2|->|vs|Ping(1)
+
+Clerk 2 pinged: 1
+(delayed) Assigning backup =  /var/tmp/824-501/viewserver-83142-2
+@|state|yellow|vs|Prepare B=s2, wait ACK
+Clerk s2 got Ping response:  P1, B_, vn1
+@|msg|vs|->|s2|1
+ViewServer.tick()
+Time since last ping from Primary: 100ms
+@|msg|s1|->|vs|Ping(1)
+
+Clerk 1 pinged: 1
+Sending newView to P, waiting for ACK:  P1, B2, vn2
+Clerk s1 got Ping response:  P1, B2, vn2
+@|msg|vs|->|s1|2
+@|msg|s2|->|vs|Ping(1)
+
+Clerk 2 pinged: 1
+Clerk s2 got Ping response:  P1, B_, vn1
+@|msg|vs|->|s2|1
+ViewServer.tick()
+@|msg|s1|->|vs|Ping(2)
+Time since last ping from Primary: 103ms
+
+Clerk 1 pinged: 2
+P made ACK! Updated view data with newView:  P1, B2, vn2
+@|state|green|vs|Primary ACK! Apply changes: P1, B2, vn2.
+Clerk s1 got Ping response:  P1, B2, vn2
+@|msg|vs|->|s1|2
+@|msg|s2|->|vs|Ping(1)
+
+Clerk 2 pinged: 1
+Ignoring: B still not updated.
+Clerk s2 got Ping response:  P1, B2, vn2
+@|msg|vs|->|s2|2
+  ... Passed
+@|title|Test: Backup takes over if primary fails ...
+
+@|table|vs|P:s1,B:s2,vn:2
+@|msg|s1|->|vs|Ping(2)
+
+Clerk 1 pinged: 2
+Clerk s1 got Ping response:  P1, B2, vn2
+@|msg|vs|->|s1|2
+@|msg|s2|->|vs|Ping(2)
+
+Clerk 2 pinged: 2
+Ignoring: B still not updated.
+Clerk s2 got Ping response:  P1, B2, vn2
+@|msg|vs|->|s2|2
+@|msg|s2|->|vs|Ping(2)
+
+Clerk 2 pinged: 2
+Ignoring: B still not updated.
+Clerk s2 got Ping response:  P1, B2, vn2
+@|msg|vs|->|s2|2
+@|msg|s2|->|vs|Ping(2)
+ViewServer.tick()
+Time since last ping from Primary: 102ms
+Time since last ping from Backup: 101ms
+
+Clerk 2 pinged: 2
+Ignoring: B still not updated.
+Clerk s2 got Ping response:  P1, B2, vn2
+@|msg|vs|->|s2|2
+ViewServer.tick()
+Time since last ping from Primary: 202ms
+Time since last ping from Backup: 100ms
+@|msg|s2|->|vs|Ping(2)
+
+Clerk 2 pinged: 2
+Ignoring: B still not updated.
+Clerk s2 got Ping response:  P1, B2, vn2
+@|msg|vs|->|s2|2
+@|msg|s2|->|vs|Ping(2)
+ViewServer.tick()
+Time since last ping from Primary: 307ms
+Time since last ping from Backup: 104ms
+
+Clerk 2 pinged: 2
+Ignoring: B still not updated.
+Clerk s2 got Ping response:  P1, B2, vn2
+@|msg|vs|->|s2|2
+ViewServer.tick()
+Time since last ping from Primary: 409ms
+@|msg|s2|->|vs|Ping(2)
+Time since last ping from Backup: 101ms
+
+Clerk 2 pinged: 2
+Ignoring: B still not updated.
+Clerk s2 got Ping response:  P1, B2, vn2
+@|msg|vs|->|s2|2
+ViewServer.tick()
+Time since last ping from Primary: 510ms
+@|msg|s2|->|vs|Ping(2)
+
+*** PRIMARY s1 DEAD...
+
+@|next
+@|state|red|s1|Primary declared dead by VS.
+@|state|yellow|vs|Prepare P=s2, wait ACK
+(delayed) Backup promoted to primary! P2, B_, vn3
+@|next
+Time since last ping from Backup: 101ms
+
+Clerk 2 pinged: 2
+Future primary Ping! Returning newView and waiting for ACK.  P2, B_, vn3
+Clerk s2 got Ping response:  P2, B_, vn3
+@|msg|vs|->|s2|3
+@|msg|s2|->|vs|Ping(3)
+
+Clerk 2 pinged: 3
+Future primary ACK! Aplying newView.  P2, B_, vn3
+@|state|green|vs|Primary ACK! Apply changes: P2, B_, vn3.
+Clerk s2 got Ping response:  P2, B_, vn3
+@|msg|vs|->|s2|3
+  ... Passed
+@|title|Test: Restarted server becomes backup ...
+
+@|table|vs|P:s2,B:,vn:3
+@|msg|s2|->|vs|Ping(3)
+
+Clerk 2 pinged: 3
+Clerk s2 got Ping response:  P2, B_, vn3
+@|msg|vs|->|s2|3
+@|msg|s1|->|vs|Ping(0)
+
+Clerk 1 pinged: 0
+* NEW CLERK PINGING
+View state: P2, B_, vn3
+Clerk s1 got Ping response:  P2, B_, vn3
+@|msg|vs|->|s1|3
+@|msg|s2|->|vs|Ping(3)
+
+Clerk 2 pinged: 3
+Clerk s2 got Ping response:  P2, B_, vn3
+@|msg|vs|->|s2|3
+ViewServer.tick()
+Time since last ping from Primary: 96ms
+@|msg|s1|->|vs|Ping(3)
+
+Clerk 1 pinged: 3
+(delayed) Assigning backup =  /var/tmp/824-501/viewserver-83142-1
+@|state|yellow|vs|Prepare B=s1, wait ACK
+Clerk s1 got Ping response:  P2, B_, vn3
+@|msg|vs|->|s1|3
+@|msg|s2|->|vs|Ping(3)
+
+Clerk 2 pinged: 3
+Sending newView to P, waiting for ACK:  P2, B1, vn4
+Clerk s2 got Ping response:  P2, B1, vn4
+@|msg|vs|->|s2|4
+@|msg|s2|->|vs|Ping(4)
+
+Clerk 2 pinged: 4
+P made ACK! Updated view data with newView:  P2, B1, vn4
+@|state|green|vs|Primary ACK! Apply changes: P2, B1, vn4.
+Clerk s2 got Ping response:  P2, B1, vn4
+@|msg|vs|->|s2|4
+  ... Passed
+@|title|Test: Idle third server becomes backup if primary fails ...
+
+@|table|vs|P:s2,B:s1,vn:4
+@|msg|s2|->|vs|Ping(4)
+
+Clerk 2 pinged: 4
+Clerk s2 got Ping response:  P2, B1, vn4
+@|msg|vs|->|s2|4
+@|msg|s3|->|vs|Ping(0)
+
+Clerk 3 pinged: 0
+* NEW CLERK PINGING
+View state: P2, B1, vn4
+Clerk s3 got Ping response:  P2, B1, vn4
+@|msg|vs|->|s3|4
+@|msg|s1|->|vs|Ping(4)
+
+Clerk 1 pinged: 4
+Ignoring: B still not updated.
+Clerk s1 got Ping response:  P2, B1, vn4
+@|msg|vs|->|s1|4
+ViewServer.tick()
+Time since last ping from Primary: 92ms
+Time since last ping from Backup: 91ms
+@|msg|s3|->|vs|Ping(4)
+
+Clerk 3 pinged: 4
+Clerk s3 got Ping response:  P2, B1, vn4
+@|msg|vs|->|s3|4
+@|msg|s1|->|vs|Ping(4)
+
+Clerk 1 pinged: 4
+Ignoring: B still not updated.
+Clerk s1 got Ping response:  P2, B1, vn4
+@|msg|vs|->|s1|4
+ViewServer.tick()
+Time since last ping from Primary: 193ms
+Time since last ping from Backup: 89ms
+@|msg|s3|->|vs|Ping(4)
+
+Clerk 3 pinged: 4
+Clerk s3 got Ping response:  P2, B1, vn4
+@|msg|vs|->|s3|4
+@|msg|s1|->|vs|Ping(4)
+
+Clerk 1 pinged: 4
+Ignoring: B still not updated.
+Clerk s1 got Ping response:  P2, B1, vn4
+@|msg|vs|->|s1|4
+ViewServer.tick()
+Time since last ping from Primary: 294ms
+Time since last ping from Backup: 86ms
+@|msg|s3|->|vs|Ping(4)
+
+Clerk 3 pinged: 4
+Clerk s3 got Ping response:  P2, B1, vn4
+@|msg|vs|->|s3|4
+@|msg|s1|->|vs|Ping(4)
+
+Clerk 1 pinged: 4
+Ignoring: B still not updated.
+Clerk s1 got Ping response:  P2, B1, vn4
+@|msg|vs|->|s1|4
+ViewServer.tick()
+Time since last ping from Primary: 395ms
+Time since last ping from Backup: 82ms
+@|msg|s3|->|vs|Ping(4)
+
+Clerk 3 pinged: 4
+Clerk s3 got Ping response:  P2, B1, vn4
+@|msg|vs|->|s3|4
+@|msg|s1|->|vs|Ping(4)
+
+Clerk 1 pinged: 4
+Ignoring: B still not updated.
+Clerk s1 got Ping response:  P2, B1, vn4
+@|msg|vs|->|s1|4
+ViewServer.tick()
+Time since last ping from Primary: 496ms
+Time since last ping from Backup: 81ms
+@|msg|s3|->|vs|Ping(4)
+
+Clerk 3 pinged: 4
+Clerk s3 got Ping response:  P2, B1, vn4
+@|msg|vs|->|s3|4
+@|msg|s1|->|vs|Ping(4)
+
+Clerk 1 pinged: 4
+Ignoring: B still not updated.
+Clerk s1 got Ping response:  P2, B1, vn4
+@|msg|vs|->|s1|4
+ViewServer.tick()
+Time since last ping from Primary: 597ms
+
+*** PRIMARY s2 DEAD...
+
+@|next
+@|state|red|s2|Primary declared dead by VS.
+@|state|yellow|vs|Prepare P=s1, wait ACK
+(delayed) Backup promoted to primary! P1, B_, vn5
+@|next
+Time since last ping from Backup: 76ms
+@|msg|s3|->|vs|Ping(4)
+
+Clerk 3 pinged: 4
+Clerk s3 got Ping response:  P2, B1, vn4
+@|msg|vs|->|s3|4
+@|msg|s1|->|vs|Ping(4)
+
+Clerk 1 pinged: 4
+Future primary Ping! Returning newView and waiting for ACK.  P1, B_, vn5
+Clerk s1 got Ping response:  P1, B_, vn5
+@|msg|vs|->|s1|5
+ViewServer.tick()
+Time since last ping from Primary: 698ms
+
+*** PRIMARY s2 DEAD...
+
+@|next
+@|state|red|s2|Primary declared dead by VS.
+@|state|yellow|vs|Prepare P=s1, wait ACK
+(delayed) Backup promoted to primary! P1, B_, vn5
+@|next
+Time since last ping from Backup: 76ms
+@|msg|s3|->|vs|Ping(4)
+
+Clerk 3 pinged: 4
+Clerk s3 got Ping response:  P2, B1, vn4
+@|msg|vs|->|s3|4
+@|msg|s1|->|vs|Ping(5)
+
+Clerk 1 pinged: 5
+Future primary ACK! Aplying newView.  P1, B_, vn5
+@|state|green|vs|Primary ACK! Apply changes: P1, B_, vn5.
+Clerk s1 got Ping response:  P1, B_, vn5
+@|msg|vs|->|s1|5
+ViewServer.tick()
+Time since last ping from Primary: 73ms
+@|msg|s3|->|vs|Ping(4)
+
+Clerk 3 pinged: 4
+(delayed) Assigning backup =  /var/tmp/824-501/viewserver-83142-3
+@|state|yellow|vs|Prepare B=s3, wait ACK
+Clerk s3 got Ping response:  P1, B_, vn5
+@|msg|vs|->|s3|5
+@|msg|s1|->|vs|Ping(5)
+
+Clerk 1 pinged: 5
+Sending newView to P, waiting for ACK:  P1, B3, vn6
+Clerk s1 got Ping response:  P1, B3, vn6
+@|msg|vs|->|s1|6
+@|msg|s1|->|vs|Ping(6)
+
+Clerk 1 pinged: 6
+P made ACK! Updated view data with newView:  P1, B3, vn6
+@|state|green|vs|Primary ACK! Apply changes: P1, B3, vn6.
+Clerk s1 got Ping response:  P1, B3, vn6
+@|msg|vs|->|s1|6
+  ... Passed
+@|title|Test: Restarted primary treated as dead ...
+
+@|table|vs|P:s1,B:s3,vn:6
+@|msg|s1|->|vs|Ping(6)
+
+Clerk 1 pinged: 6
+Clerk s1 got Ping response:  P1, B3, vn6
+@|msg|vs|->|s1|6
+@|msg|s1|->|vs|Ping(0)
+
+Clerk 1 pinged: 0
+@|state|red|s1|Primary was restarted!
+@|state|yellow|vs|Switch P and B, wait ACK.
+Clerk s1 got Ping response:  P1, B3, vn6
+@|msg|vs|->|s1|6
+@|msg|s3|->|vs|Ping(6)
+
+Clerk 3 pinged: 6
+Future primary Ping! Returning newView and waiting for ACK.  P3, B1, vn7
+Clerk s3 got Ping response:  P3, B1, vn7
+@|msg|vs|->|s3|7
+ViewServer.tick()
+Time since last ping from Primary: 68ms
+Time since last ping from Backup: 67ms
+@|msg|s1|->|vs|Ping(0)
+
+Clerk 1 pinged: 0
+@|state|red|s1|Primary was restarted!
+@|state|yellow|vs|Switch P and B, wait ACK.
+Clerk s1 got Ping response:  P1, B3, vn6
+@|msg|vs|->|s1|6
+@|msg|s3|->|vs|Ping(7)
+
+Clerk 3 pinged: 7
+Future primary ACK! Aplying newView.  P3, B1, vn7
+@|state|green|vs|Primary ACK! Apply changes: P3, B1, vn7.
+Clerk s3 got Ping response:  P3, B1, vn7
+@|msg|vs|->|s3|7
+@|msg|s3|->|vs|Ping(7)
+
+Clerk 3 pinged: 7
+Clerk s3 got Ping response:  P3, B1, vn7
+@|msg|vs|->|s3|7
+  ... Passed
+@|msg|s3|->|vs|Ping(7)
+
+Clerk 3 pinged: 7
+Clerk s3 got Ping response:  P3, B1, vn7
+@|msg|vs|->|s3|7
+ViewServer.tick()
+Time since last ping from Primary: 60ms
+Time since last ping from Backup: 63ms
+@|msg|s3|->|vs|Ping(7)
+
+Clerk 3 pinged: 7
+Clerk s3 got Ping response:  P3, B1, vn7
+@|msg|vs|->|s3|7
+ViewServer.tick()
+Time since last ping from Primary: 62ms
+Time since last ping from Backup: 168ms
+@|msg|s3|->|vs|Ping(7)
+
+Clerk 3 pinged: 7
+Clerk s3 got Ping response:  P3, B1, vn7
+@|msg|vs|->|s3|7
+ViewServer.tick()
+Time since last ping from Primary: 60ms
+Time since last ping from Backup: 272ms
+@|msg|s3|->|vs|Ping(7)
+
+Clerk 3 pinged: 7
+Clerk s3 got Ping response:  P3, B1, vn7
+@|msg|vs|->|s3|7
+ViewServer.tick()
+Time since last ping from Primary: 59ms
+Time since last ping from Backup: 377ms
+@|msg|s3|->|vs|Ping(7)
+
+Clerk 3 pinged: 7
+Clerk s3 got Ping response:  P3, B1, vn7
+@|msg|vs|->|s3|7
+ViewServer.tick()
+Time since last ping from Primary: 60ms
+Time since last ping from Backup: 482ms
+@|msg|s3|->|vs|Ping(7)
+
+Clerk 3 pinged: 7
+Clerk s3 got Ping response:  P3, B1, vn7
+@|msg|vs|->|s3|7
+ViewServer.tick()
+Time since last ping from Primary: 57ms
+Time since last ping from Backup: 583ms
+BACKUP DEAD: RIP...
+Backup removed from viewserver. P3, B1, vn7
+@|next
+@|state|yellow|vs|Prepare B='', wait ACK
+@|state|red|s1|Backup declared dead by VS.
+@|next
+@|msg|s3|->|vs|Ping(7)
+
+Clerk 3 pinged: 7
+Sending newView to P, waiting for ACK:  P3, B_, vn8
+Clerk s3 got Ping response:  P3, B_, vn8
+@|msg|vs|->|s3|8
+ViewServer.tick()
+Time since last ping from Primary: 57ms
+Time since last ping from Backup: 684ms
+@|msg|s3|->|vs|Ping(8)
+
+Clerk 3 pinged: 8
+P made ACK! Updated view data with newView:  P3, B_, vn8
+@|state|green|vs|Primary ACK! Apply changes: P3, B_, vn8.
+Clerk s3 got Ping response:  P3, B_, vn8
+@|msg|vs|->|s3|8
+ViewServer.tick()
+Time since last ping from Primary: 58ms
+@|msg|s3|->|vs|Ping(8)
+
+Clerk 3 pinged: 8
+Clerk s3 got Ping response:  P3, B_, vn8
+@|msg|vs|->|s3|8
+ViewServer.tick()
+Time since last ping from Primary: 54ms
+@|msg|s3|->|vs|Ping(8)
+
+Clerk 3 pinged: 8
+Clerk s3 got Ping response:  P3, B_, vn8
+@|msg|vs|->|s3|8
+ViewServer.tick()
+Time since last ping from Primary: 53ms
+@|msg|s3|->|vs|Ping(8)
+
+Clerk 3 pinged: 8
+Clerk s3 got Ping response:  P3, B_, vn8
+@|msg|vs|->|s3|8
+ViewServer.tick()
+Time since last ping from Primary: 57ms
+@|msg|s3|->|vs|Ping(8)
+
+Clerk 3 pinged: 8
+Clerk s3 got Ping response:  P3, B_, vn8
+@|msg|vs|->|s3|8
+ViewServer.tick()
+Time since last ping from Primary: 55ms
+@|msg|s3|->|vs|Ping(8)
+
+Clerk 3 pinged: 8
+Clerk s3 got Ping response:  P3, B_, vn8
+@|msg|vs|->|s3|8
+ViewServer.tick()
+Time since last ping from Primary: 54ms
+@|msg|s3|->|vs|Ping(8)
+
+Clerk 3 pinged: 8
+Clerk s3 got Ping response:  P3, B_, vn8
+@|msg|vs|->|s3|8
+ViewServer.tick()
+Time since last ping from Primary: 54ms
+@|msg|s3|->|vs|Ping(8)
+
+Clerk 3 pinged: 8
+Clerk s3 got Ping response:  P3, B_, vn8
+@|msg|vs|->|s3|8
+ViewServer.tick()
+Time since last ping from Primary: 54ms
+@|title|Test: Viewserver waits for primary to ack view ...
+
+@|table|vs|P:s3,B:,vn:8
+@|msg|s1|->|vs|Ping(0)
+
+Clerk 1 pinged: 0
+* NEW CLERK PINGING
+View state: P3, B_, vn8
+Clerk s1 got Ping response:  P3, B_, vn8
+@|msg|vs|->|s1|8
+@|msg|s3|->|vs|Ping(8)
+
+Clerk 3 pinged: 8
+Clerk s3 got Ping response:  P3, B_, vn8
+@|msg|vs|->|s3|8
+ViewServer.tick()
+Time since last ping from Primary: 51ms
+@|msg|s1|->|vs|Ping(8)
+
+Clerk 1 pinged: 8
+(delayed) Assigning backup =  /var/tmp/824-501/viewserver-83142-1
+@|state|yellow|vs|Prepare B=s1, wait ACK
+Clerk s1 got Ping response:  P3, B_, vn8
+@|msg|vs|->|s1|8
+@|msg|s3|->|vs|Ping(8)
+
+Clerk 3 pinged: 8
+Sending newView to P, waiting for ACK:  P3, B1, vn9
+Clerk s3 got Ping response:  P3, B1, vn9
+@|msg|vs|->|s3|9
+ViewServer.tick()
+Time since last ping from Primary: 49ms
+@|msg|s1|->|vs|Ping(8)
+
+Clerk 1 pinged: 8
+Clerk s1 got Ping response:  P3, B_, vn8
+@|msg|vs|->|s1|8
+@|msg|s3|->|vs|Ping(9)
+
+Clerk 3 pinged: 9
+P made ACK! Updated view data with newView:  P3, B1, vn9
+@|state|green|vs|Primary ACK! Apply changes: P3, B1, vn9.
+Clerk s3 got Ping response:  P3, B1, vn9
+@|msg|vs|->|s3|9
+@|msg|s1|->|vs|Ping(9)
+
+Clerk 1 pinged: 9
+Ignoring: B still not updated.
+Clerk s1 got Ping response:  P3, B1, vn9
+@|msg|vs|->|s1|9
+ViewServer.tick()
+Time since last ping from Primary: 45ms
+Time since last ping from Backup: 42ms
+@|msg|s1|->|vs|Ping(9)
+
+Clerk 1 pinged: 9
+Ignoring: B still not updated.
+Clerk s1 got Ping response:  P3, B1, vn9
+@|msg|vs|->|s1|9
+ViewServer.tick()
+Time since last ping from Primary: 150ms
+Time since last ping from Backup: 44ms
+@|msg|s1|->|vs|Ping(9)
+
+Clerk 1 pinged: 9
+Ignoring: B still not updated.
+Clerk s1 got Ping response:  P3, B1, vn9
+@|msg|vs|->|s1|9
+ViewServer.tick()
+Time since last ping from Primary: 255ms
+Time since last ping from Backup: 43ms
+@|msg|s1|->|vs|Ping(9)
+
+Clerk 1 pinged: 9
+Ignoring: B still not updated.
+Clerk s1 got Ping response:  P3, B1, vn9
+@|msg|vs|->|s1|9
+ViewServer.tick()
+Time since last ping from Primary: 359ms
+Time since last ping from Backup: 41ms
+@|msg|s1|->|vs|Ping(9)
+
+Clerk 1 pinged: 9
+Ignoring: B still not updated.
+Clerk s1 got Ping response:  P3, B1, vn9
+@|msg|vs|->|s1|9
+ViewServer.tick()
+Time since last ping from Primary: 464ms
+Time since last ping from Backup: 41ms
+@|msg|s1|->|vs|Ping(9)
+
+Clerk 1 pinged: 9
+Ignoring: B still not updated.
+Clerk s1 got Ping response:  P3, B1, vn9
+@|msg|vs|->|s1|9
+ViewServer.tick()
+Time since last ping from Primary: 569ms
+
+*** PRIMARY s3 DEAD...
+
+@|next
+@|state|red|s3|Primary declared dead by VS.
+@|state|yellow|vs|Prepare P=s1, wait ACK
+(delayed) Backup promoted to primary! P1, B_, vn10
+@|next
+Time since last ping from Backup: 41ms
+@|msg|s1|->|vs|Ping(9)
+
+Clerk 1 pinged: 9
+Future primary Ping! Returning newView and waiting for ACK.  P1, B_, vn10
+Clerk s1 got Ping response:  P1, B_, vn10
+@|msg|vs|->|s1|10
+  ... Passed
+@|title|Test: Uninitialized server can't become primary ...
+
+@|table|vs|P:s3,B:s1,vn:9
+@|msg|s1|->|vs|Ping(9)
+
+Clerk 1 pinged: 9
+Future primary Ping! Returning newView and waiting for ACK.  P1, B_, vn10
+Clerk s1 got Ping response:  P1, B_, vn10
+@|msg|vs|->|s1|10
+@|msg|s2|->|vs|Ping(0)
+
+Clerk 2 pinged: 0
+* NEW CLERK PINGING
+View state: P3, B1, vn9
+Clerk s2 got Ping response:  P3, B1, vn9
+@|msg|vs|->|s2|9
+@|msg|s3|->|vs|Ping(9)
+
+Clerk 3 pinged: 9
+Sending newView to P, waiting for ACK:  P1, B_, vn10
+Clerk s3 got Ping response:  P1, B_, vn10
+@|msg|vs|->|s3|10
+ViewServer.tick()
+Time since last ping from Primary: 33ms
+Time since last ping from Backup: 34ms
+@|msg|s1|->|vs|Ping(9)
+
+Clerk 1 pinged: 9
+Future primary Ping! Returning newView and waiting for ACK.  P1, B_, vn10
+Clerk s1 got Ping response:  P1, B_, vn10
+@|msg|vs|->|s1|10
+@|msg|s2|->|vs|Ping(0)
+
+Clerk 2 pinged: 0
+* NEW CLERK PINGING
+View state: P3, B1, vn9
+Clerk s2 got Ping response:  P3, B1, vn9
+@|msg|vs|->|s2|9
+@|msg|s3|->|vs|Ping(9)
+
+Clerk 3 pinged: 9
+Sending newView to P, waiting for ACK:  P1, B_, vn10
+Clerk s3 got Ping response:  P1, B_, vn10
+@|msg|vs|->|s3|10
+ViewServer.tick()
+Time since last ping from Primary: 30ms
+Time since last ping from Backup: 31ms
+@|msg|s1|->|vs|Ping(9)
+
+Clerk 1 pinged: 9
+Future primary Ping! Returning newView and waiting for ACK.  P1, B_, vn10
+Clerk s1 got Ping response:  P1, B_, vn10
+@|msg|vs|->|s1|10
+@|msg|s2|->|vs|Ping(0)
+
+Clerk 2 pinged: 0
+* NEW CLERK PINGING
+View state: P3, B1, vn9
+Clerk s2 got Ping response:  P3, B1, vn9
+@|msg|vs|->|s2|9
+@|msg|s3|->|vs|Ping(9)
+
+Clerk 3 pinged: 9
+Sending newView to P, waiting for ACK:  P1, B_, vn10
+Clerk s3 got Ping response:  P1, B_, vn10
+@|msg|vs|->|s3|10
+ViewServer.tick()
+Time since last ping from Primary: 28ms
+Time since last ping from Backup: 29ms
+@|msg|s1|->|vs|Ping(9)
+
+Clerk 1 pinged: 9
+Future primary Ping! Returning newView and waiting for ACK.  P1, B_, vn10
+Clerk s1 got Ping response:  P1, B_, vn10
+@|msg|vs|->|s1|10
+@|msg|s2|->|vs|Ping(0)
+
+Clerk 2 pinged: 0
+* NEW CLERK PINGING
+View state: P3, B1, vn9
+Clerk s2 got Ping response:  P3, B1, vn9
+@|msg|vs|->|s2|9
+@|msg|s3|->|vs|Ping(9)
+
+Clerk 3 pinged: 9
+Sending newView to P, waiting for ACK:  P1, B_, vn10
+Clerk s3 got Ping response:  P1, B_, vn10
+@|msg|vs|->|s3|10
+ViewServer.tick()
+Time since last ping from Primary: 30ms
+Time since last ping from Backup: 31ms
+@|msg|s1|->|vs|Ping(9)
+
+Clerk 1 pinged: 9
+Future primary Ping! Returning newView and waiting for ACK.  P1, B_, vn10
+Clerk s1 got Ping response:  P1, B_, vn10
+@|msg|vs|->|s1|10
+@|msg|s2|->|vs|Ping(0)
+
+Clerk 2 pinged: 0
+* NEW CLERK PINGING
+View state: P3, B1, vn9
+Clerk s2 got Ping response:  P3, B1, vn9
+@|msg|vs|->|s2|9
+@|msg|s3|->|vs|Ping(9)
+
+Clerk 3 pinged: 9
+Sending newView to P, waiting for ACK:  P1, B_, vn10
+Clerk s3 got Ping response:  P1, B_, vn10
+@|msg|vs|->|s3|10
+ViewServer.tick()
+Time since last ping from Primary: 25ms
+Time since last ping from Backup: 27ms
+@|msg|s1|->|vs|Ping(9)
+
+Clerk 1 pinged: 9
+Future primary Ping! Returning newView and waiting for ACK.  P1, B_, vn10
+Clerk s1 got Ping response:  P1, B_, vn10
+@|msg|vs|->|s1|10
+@|msg|s2|->|vs|Ping(0)
+
+Clerk 2 pinged: 0
+* NEW CLERK PINGING
+View state: P3, B1, vn9
+Clerk s2 got Ping response:  P3, B1, vn9
+@|msg|vs|->|s2|9
+@|msg|s3|->|vs|Ping(9)
+
+Clerk 3 pinged: 9
+Sending newView to P, waiting for ACK:  P1, B_, vn10
+Clerk s3 got Ping response:  P1, B_, vn10
+@|msg|vs|->|s3|10
+ViewServer.tick()
+Time since last ping from Primary: 22ms
+Time since last ping from Backup: 24ms
+@|msg|s1|->|vs|Ping(9)
+
+Clerk 1 pinged: 9
+Future primary Ping! Returning newView and waiting for ACK.  P1, B_, vn10
+Clerk s1 got Ping response:  P1, B_, vn10
+@|msg|vs|->|s1|10
+@|msg|s2|->|vs|Ping(0)
+
+Clerk 2 pinged: 0
+* NEW CLERK PINGING
+View state: P3, B1, vn9
+Clerk s2 got Ping response:  P3, B1, vn9
+@|msg|vs|->|s2|9
+@|msg|s3|->|vs|Ping(9)
+
+Clerk 3 pinged: 9
+Sending newView to P, waiting for ACK:  P1, B_, vn10
+Clerk s3 got Ping response:  P1, B_, vn10
+@|msg|vs|->|s3|10
+ViewServer.tick()
+Time since last ping from Primary: 19ms
+Time since last ping from Backup: 20ms
+@|msg|s1|->|vs|Ping(9)
+
+Clerk 1 pinged: 9
+Future primary Ping! Returning newView and waiting for ACK.  P1, B_, vn10
+Clerk s1 got Ping response:  P1, B_, vn10
+@|msg|vs|->|s1|10
+@|msg|s2|->|vs|Ping(0)
+
+Clerk 2 pinged: 0
+* NEW CLERK PINGING
+View state: P3, B1, vn9
+Clerk s2 got Ping response:  P3, B1, vn9
+@|msg|vs|->|s2|9
+@|msg|s3|->|vs|Ping(9)
+
+Clerk 3 pinged: 9
+Sending newView to P, waiting for ACK:  P1, B_, vn10
+Clerk s3 got Ping response:  P1, B_, vn10
+@|msg|vs|->|s3|10
+ViewServer.tick()
+Time since last ping from Primary: 15ms
+Time since last ping from Backup: 16ms
+@|msg|s1|->|vs|Ping(9)
+
+Clerk 1 pinged: 9
+Future primary Ping! Returning newView and waiting for ACK.  P1, B_, vn10
+Clerk s1 got Ping response:  P1, B_, vn10
+@|msg|vs|->|s1|10
+@|msg|s2|->|vs|Ping(0)
+
+Clerk 2 pinged: 0
+* NEW CLERK PINGING
+View state: P3, B1, vn9
+Clerk s2 got Ping response:  P3, B1, vn9
+@|msg|vs|->|s2|9
+@|msg|s3|->|vs|Ping(9)
+
+Clerk 3 pinged: 9
+Sending newView to P, waiting for ACK:  P1, B_, vn10
+Clerk s3 got Ping response:  P1, B_, vn10
+@|msg|vs|->|s3|10
+ViewServer.tick()
+Time since last ping from Primary: 14ms
+Time since last ping from Backup: 15ms
+@|msg|s1|->|vs|Ping(9)
+
+Clerk 1 pinged: 9
+Future primary Ping! Returning newView and waiting for ACK.  P1, B_, vn10
+Clerk s1 got Ping response:  P1, B_, vn10
+@|msg|vs|->|s1|10
+@|msg|s2|->|vs|Ping(0)
+
+Clerk 2 pinged: 0
+* NEW CLERK PINGING
+View state: P3, B1, vn9
+Clerk s2 got Ping response:  P3, B1, vn9
+@|msg|vs|->|s2|9
+@|msg|s3|->|vs|Ping(9)
+
+Clerk 3 pinged: 9
+Sending newView to P, waiting for ACK:  P1, B_, vn10
+Clerk s3 got Ping response:  P1, B_, vn10
+@|msg|vs|->|s3|10
+ViewServer.tick()
+Time since last ping from Primary: 9ms
+Time since last ping from Backup: 10ms
+@|msg|s2|->|vs|Ping(0)
+
+Clerk 2 pinged: 0
+* NEW CLERK PINGING
+View state: P3, B1, vn9
+Clerk s2 got Ping response:  P3, B1, vn9
+@|msg|vs|->|s2|9
+ViewServer.tick()
+Time since last ping from Primary: 110ms
+Time since last ping from Backup: 111ms
+@|msg|s2|->|vs|Ping(0)
+
+Clerk 2 pinged: 0
+* NEW CLERK PINGING
+View state: P3, B1, vn9
+Clerk s2 got Ping response:  P3, B1, vn9
+@|msg|vs|->|s2|9
+ViewServer.tick()
+Time since last ping from Primary: 212ms
+Time since last ping from Backup: 213ms
+@|msg|s2|->|vs|Ping(0)
+ViewServer.tick()
+Time since last ping from Primary: 312ms
+Time since last ping from Backup: 313ms
+
+Clerk 2 pinged: 0
+* NEW CLERK PINGING
+View state: P3, B1, vn9
+Clerk s2 got Ping response:  P3, B1, vn9
+@|msg|vs|->|s2|9
+@|msg|s2|->|vs|Ping(0)
+ViewServer.tick()
+Time since last ping from Primary: 417ms
+Time since last ping from Backup: 418ms
+
+Clerk 2 pinged: 0
+* NEW CLERK PINGING
+View state: P3, B1, vn9
+Clerk s2 got Ping response:  P3, B1, vn9
+@|msg|vs|->|s2|9
+ViewServer.tick()
+@|msg|s2|->|vs|Ping(0)
+Time since last ping from Primary: 522ms
+
+*** PRIMARY s3 DEAD...
+
+@|next
+@|state|red|s3|Primary declared dead by VS.
+@|state|yellow|vs|Prepare P=s1, wait ACK
+(delayed) Backup promoted to primary! P1, B_, vn10
+@|next
+Time since last ping from Backup: 523ms
+
+Clerk 2 pinged: 0
+* NEW CLERK PINGING
+View state: P3, B1, vn9
+Clerk s2 got Ping response:  P3, B1, vn9
+@|msg|vs|->|s2|9
+@|msg|s2|->|vs|Ping(0)
+ViewServer.tick()
+Time since last ping from Primary: 625ms
+
+*** PRIMARY s3 DEAD...
+
+@|next
+@|state|red|s3|Primary declared dead by VS.
+@|state|yellow|vs|Prepare P=s1, wait ACK
+(delayed) Backup promoted to primary! P1, B_, vn10
+@|next
+Time since last ping from Backup: 626ms
+
+Clerk 2 pinged: 0
+* NEW CLERK PINGING
+View state: P3, B1, vn9
+Clerk s2 got Ping response:  P3, B1, vn9
+@|msg|vs|->|s2|9
+@|msg|s2|->|vs|Ping(0)
+ViewServer.tick()
+Time since last ping from Primary: 730ms
+
+*** PRIMARY s3 DEAD...
+
+@|next
+@|state|red|s3|Primary declared dead by VS.
+@|state|yellow|vs|Prepare P=s1, wait ACK
+(delayed) Backup promoted to primary! P1, B_, vn10
+@|next
+Time since last ping from Backup: 731ms
+
+Clerk 2 pinged: 0
+* NEW CLERK PINGING
+View state: P3, B1, vn9
+Clerk s2 got Ping response:  P3, B1, vn9
+@|msg|vs|->|s2|9
+@|msg|s2|->|vs|Ping(0)
+ViewServer.tick()
+Time since last ping from Primary: 834ms
+
+*** PRIMARY s3 DEAD...
+
+@|next
+@|state|red|s3|Primary declared dead by VS.
+@|state|yellow|vs|Prepare P=s1, wait ACK
+(delayed) Backup promoted to primary! P1, B_, vn10
+@|next
+Time since last ping from Backup: 835ms
+
+Clerk 2 pinged: 0
+* NEW CLERK PINGING
+View state: P3, B1, vn9
+Clerk s2 got Ping response:  P3, B1, vn9
+@|msg|vs|->|s2|9
+ViewServer.tick()
+@|msg|s2|->|vs|Ping(0)
+Time since last ping from Primary: 937ms
+
+*** PRIMARY s3 DEAD...
+
+@|next
+@|state|red|s3|Primary declared dead by VS.
+@|state|yellow|vs|Prepare P=s1, wait ACK
+(delayed) Backup promoted to primary! P1, B_, vn10
+@|next
+Time since last ping from Backup: 938ms
+
+Clerk 2 pinged: 0
+* NEW CLERK PINGING
+View state: P3, B1, vn9
+Clerk s2 got Ping response:  P3, B1, vn9
+@|msg|vs|->|s2|9
+@|msg|s2|->|vs|Ping(0)
+ViewServer.tick()
+Time since last ping from Primary: 1.043s
+
+*** PRIMARY s3 DEAD...
+
+@|next
+@|state|red|s3|Primary declared dead by VS.
+@|state|yellow|vs|Prepare P=s1, wait ACK
+(delayed) Backup promoted to primary! P1, B_, vn10
+@|next
+Time since last ping from Backup: 1.044s
+
+Clerk 2 pinged: 0
+* NEW CLERK PINGING
+View state: P3, B1, vn9
+Clerk s2 got Ping response:  P3, B1, vn9
+@|msg|vs|->|s2|9
+ViewServer.tick()
+Time since last ping from Primary: 1.148s
+
+*** PRIMARY s3 DEAD...
+
+@|next
+@|state|red|s3|Primary declared dead by VS.
+@|state|yellow|vs|Prepare P=s1, wait ACK
+(delayed) Backup promoted to primary! P1, B_, vn10
+@|next
+Time since last ping from Backup: 1.149s
+  ... Passed
+PASS
+ok  	viewservice	6.558s
