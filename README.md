@@ -12,7 +12,7 @@ The following is a capture of an example diagram (green, yellow and red orbs sho
 ## Installation (for Lab 2)
 
 1. Copy the *diagram* directory and the files *makediagram.go* and *textdiagram.sh* to your *src* folder.
-2. Add *import "diagram"* to any source file from where you want to log elements to the diagram (probably all of them).
+2. Add **import "diagram"** to any source file from where you want to log elements to the diagram (probably all of them).
 
 ## Usage
 
