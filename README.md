@@ -81,6 +81,14 @@ Skips some vertical space; useful for separating state circles in the diagram as
 diagram.LogNext()
 ```
 
+## Configuration variables
+
+#### PrintLogs (boolean)
+Set this variable to *false* to globally prevent the Log functions from printing anything. Can be used to activate / deactivate the logging functionality for single tests (reduce diagram length).
+```Go
+diagram.PrintLogs = false // deactivates logging. Assign 'true' to activate when needed
+```
+
 ## Helper formatting functions
 You may use the following formatting functions (or roll your own as needed) to make it easier to log information; add them to *common.js*.
 
