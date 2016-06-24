@@ -40,12 +40,20 @@ func main() {
 				evType = words[1]
 				switch(evType) {
 				case "msg":
-					origin := words[2]
-					dest := words[4]
-					label := words[5]
-					newLine := fmt.Sprintf("{ type: \"msg\", from: \"%s\", to: \"%s\", label: \"%s\" },", origin, dest, label)
-					fmt.Fprintln(writer, newLine)
-					writer.Flush()
+					if (len(words) >= 5) {
+						origin := words[2]
+						dest := words[4]
+						label := ""
+						if (len(words) == 6) {
+							label = words[5]
+						}
+						newLine := fmt.Sprintf("{ type: \"msg\", from: \"%s\", to: \"%s\", label: \"%s\" },", origin, dest, label)
+						fmt.Fprintln(writer, newLine)
+						writer.Flush()
+					} else {
+						fmt.Println("ERROR: Could not parse output line:", line, ". IGNORING (please solve)...")
+					}
+
 					break
 				case "title":
 					label := words[2]
