@@ -47,10 +47,14 @@ func LogNext() {
 	}
 }
 
+
+
 // Translates the full name of a node to an equivalent ID for the diagram.
 // Modify this as needed for your project
 func LogName(name string) string {
 	switch (name) {
+	case "":
+		return ""
 	case "vs":
 		return "vs"
 	case "ck":
