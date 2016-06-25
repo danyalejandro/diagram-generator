@@ -10,7 +10,6 @@ var marker;
 var y0 = 60; // First y offset
 var evCount = 0; // event counter
 var evHeight = 35; // event height
-var evAngle = 6; // aprox. angle of events
 var numEvents = dataContent.length;
 var heightContent = numEvents * evHeight;
 var maxY = 0;
@@ -99,7 +98,8 @@ function drawMsg(label, a1, a2) {
 	var leftToRight = (x2 > x1);
 	var tx = (leftToRight) ? (x1 + (x2 - x1) / 2) : (x2 + (x1 - x2) / 2);
 	var ty = y1 + (evHeight / 2) - 5;
-	var angle = (leftToRight) ? "r" + evAngle : "r" + (360 - evAngle);
+	var evAngle = Math.atan((y2 - y1) / (x2 - x1)) * 57.2958;
+	var angle = "r" + evAngle;
 	c.line(x1, y1 + 4, x2, y2).attr({ "stroke": "#000", markerEnd: marker });
 	c.text(tx, ty, label).attr({ "font-size": "14px", "text-anchor": "middle", fill: "#000" }).transform(angle);
 	
@@ -138,14 +138,20 @@ function drawAxisEvent(conf, axis) {
 }
 
 $(document).ready(function() {
-
 	$("#content").height(heightContent);
+	var numAxis = dataAxis.length;
 
 	// Limit console column on small screens
 	browserWidth = $(document).width();
 	if (browserWidth <= 1024) {
 		$("#console").css("max-width", "470px");
 	}
+
+	// console window should not overlap diagram!
+	var diagramWidth = (50 + 150 * numAxis) - 100;
+	var maxConsoleWidth = browserWidth - diagramWidth;
+	$("#console").css("max-width", maxConsoleWidth + "px");
+	$("#content").css("width", diagramWidth + "px");
 	
 	// prepare Snap vars
 	h = Snap("#header");
@@ -155,9 +161,9 @@ $(document).ready(function() {
 	
 	// Create associative array of axis SVG objects
 	var axis = [];
-	var i = 0, n = dataAxis.length;
+	var i = 0;
 	var posX = 50;
-	for (i = 0 ; i < n ; i++) {
+	for (i = 0 ; i < numAxis ; i++) {
 		axis[dataAxis[i].id] = drawAxis(dataAxis[i].label, posX, dataAxis[i].color);
 		posX += 150;
 	}
@@ -190,5 +196,4 @@ $(document).ready(function() {
 	}
 	// set svg area height to match content
 	$("#content").height(maxY + evHeight);
-
 });
